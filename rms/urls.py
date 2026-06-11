@@ -1,11 +1,24 @@
 from django.urls import path
 from .views import *
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('category', CategoryModelViewSet, basename='category')
+# router.register('category', CategoryDetailViewSet, basename='category-detail')
+
+# Viewset:
+urlpatterns = [
+    # path('category/', CategoryViewSet.as_view({'get':'list','post':'create'})),
+    # path('category/<pk>/', CategoryDetailViewSet.as_view({'get':'retrieve','put':'update','patch':'partial_update','delete':'destroy'})),
+] + router.urls
+
+# ---------------------------------------------------------------------------------
 
 # Mixins:
-urlpatterns = [
-    path('category/', CategoryGenericAPIView.as_view()),
-    path('category/<pk>/', CategoryDetail.as_view())
-]
+# urlpatterns = [
+#     path('category/', CategoryGenericAPIView.as_view()),
+#     path('category/<pk>/', CategoryDetail.as_view())
+# ]
 
 # ---------------------------------------------------------------------------------
 
