@@ -1,11 +1,19 @@
 from django.urls import path
 from .views import *
 
-# class based 
+# Mixins:
 urlpatterns = [
-    path('category/', CategoryAPIView.as_view()),
-    path('category/<id>/', CategoryDetail.as_view()),
+    path('category/', CategoryGenericAPIView.as_view()),
+    path('category/<pk>/', CategoryDetail.as_view())
 ]
+
+# ---------------------------------------------------------------------------------
+
+# class based 
+# urlpatterns = [
+#     path('category/', CategoryAPIView.as_view()),
+#     path('category/<id>/', CategoryDetail.as_view()),
+# ]
 
 # ---------------------------------------------------------------------------------
 
