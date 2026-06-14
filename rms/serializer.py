@@ -1,12 +1,41 @@
 from rest_framework import serializers
 from .models import *
+from decimal import Decimal
 
 class CategoryModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         # fields = '__all__'
         fields = ['id','name']
-        # exclude = ['name'] 
+        # exclude = ['name']
+        
+    def save(self, **kwargs):
+        validated_data = self.validated_data
+        category = Category.objects.filter(name = validated_data.get('name')).count()
+        if category > 0:
+            raise serializers.ValidationError({'name':'category with this name already exists'})
+        return super().save(**kwargs)
+        
+    def create(self, validated_data):
+        category = Category.objects.filter(name = validated_data.get('name')).count()
+        if category > 0:
+            raise serializers.ValidationError({'name':'category with this name already exists'})
+        return super().create(validated_data)
+    
+class FoodModelSerializer(serializers.ModelSerializer):
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    category = serializers.StringRelatedField()
+    price_with_vat = serializers.SerializerMethodField()
+    price_with_discount = serializers.SerializerMethodField()
+    class Meta:
+        model = Food
+        fields = ['id','name','description','price','price_with_vat','price_with_discount','category','category_id']
+        
+    def get_price_with_vat(self, food:Food):
+        return food.price * Decimal(0.13) + food.price
+    
+    def get_price_with_discount(self, food:Food):
+        return food.price - Decimal(0.10) * food.price    
     
 # ---------------------------------------------------------------------------------
 

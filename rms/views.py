@@ -18,6 +18,10 @@ class CategoryModelViewSet(viewsets.ModelViewSet):
             return Response({'detail':'category can not be deleted. Protected in OrderItem'})
         category.delete()
         return Response({'detail':'category deleted successfully'})
+    
+class FoodModelViewSet(viewsets.ModelViewSet):
+    queryset = Food.objects.select_related('category').all()
+    serializer_class = FoodModelSerializer
 
 # ---------------------------------------------------------------------------------
 
