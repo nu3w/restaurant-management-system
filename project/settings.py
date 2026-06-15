@@ -147,3 +147,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+# EMAIL_HOST_USER = '3f40a0b0819e55'
+# EMAIL_HOST_PASSWORD = '4087c880d7e0e7'
+# EMAIL_PORT = '2525'
+
+ANYMAIL = {
+  "MAILTRAP_API_TOKEN": "0de085ffeab805d3be227ea7f8619f1e",
+  "MAILTRAP_SANDBOX_ID": 4713882,
+}
+EMAIL_BACKEND = "anymail.backends.mailtrap.EmailBackend"
