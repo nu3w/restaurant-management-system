@@ -40,8 +40,8 @@ class Order(models.Model):
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default='U')
     
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    food = models.ForeignKey(Food, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='item')
+    food = models.ForeignKey(Food, on_delete=models.PROTECT, related_name='item')
     
 class Payment(models.Model):
     PAYMENT_METHODS = [

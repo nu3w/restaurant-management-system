@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register('category', CategoryModelViewSet, basename='category')
 # router.register('category', CategoryDetailViewSet, basename='category-detail')
 router.register('food', FoodModelViewSet, basename='food')
+router.register('order', OrderModelViewSet, basename='order')
 
 # Viewset:
 urlpatterns = [

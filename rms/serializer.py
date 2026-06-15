@@ -16,11 +16,11 @@ class CategoryModelSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'name':'category with this name already exists'})
         return super().save(**kwargs)
         
-    def create(self, validated_data):
-        category = Category.objects.filter(name = validated_data.get('name')).count()
-        if category > 0:
-            raise serializers.ValidationError({'name':'category with this name already exists'})
-        return super().create(validated_data)
+    # def create(self, validated_data):
+    #     category = Category.objects.filter(name = validated_data.get('name')).count()
+    #     if category > 0:
+    #         raise serializers.ValidationError({'name':'category with this name already exists'})
+    #     return super().create(validated_data)
     
 class FoodModelSerializer(serializers.ModelSerializer):
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
@@ -35,7 +35,36 @@ class FoodModelSerializer(serializers.ModelSerializer):
         return food.price * Decimal(0.13) + food.price
     
     def get_price_with_discount(self, food:Food):
-        return food.price - Decimal(0.10) * food.price    
+        return food.price - Decimal(0.10) * food.price  
+    
+class OrderItemModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['food']
+    
+class OrderModelSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+    item = OrderItemModelSerializer(many = True)
+    status = serializers.CharField(read_only = True)
+    payment_status = serializers.CharField(read_only = True)
+    total_price = serializers.IntegerField(read_only = True)
+    class Meta:
+        model = Order
+        fields = ['id','user','total_price','status','payment_status','item']
+        
+    def create(self, validated_data):
+        items = validated_data.pop('item')
+        total = 0
+        for item in items:
+            food_item = item.get('food')
+            total += food_item.price
+        order = Order.objects.create(total_price = total, **validated_data)
+        for item in items:
+            OrderItem.objects.create(order = order, food = item.get('food'))
+        return order
+    
+# validated_data = {}
+# items = {"item": [{"food":10},{"food":11},{"food":12}]}
     
 # ---------------------------------------------------------------------------------
 

@@ -34,7 +34,15 @@ class FoodModelViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
     # filterset_fields = ['category']
-    filterset_class = FoodFilter
+    filterset_class = FoodFilter    
+    permission_classes = [IsAuth]
+
+    
+class OrderModelViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.prefetch_related('item').all()
+    serializer_class = OrderModelSerializer
+    permission_classes = [IsAuth]
+    pagination_class = PageNumberPagination
 
 # ---------------------------------------------------------------------------------
 
